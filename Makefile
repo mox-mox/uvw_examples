@@ -3,7 +3,7 @@ CXXFLAGS += -Wall -Wextra -Wpedantic -Werror -Wfatal-errors -ggdb -O0
 
 
 #all: 1 2_srv 2_cli
-all: 2_srv 2_cli
+all: 3_srv 3_cli
 
 
 1: 1.cpp
@@ -19,6 +19,18 @@ all: 2_srv 2_cli
 	notify-send "Build complete for $@"
 
 2_cli: 2_cli.cpp
+	notify-send "Starting build for $@"
+	g++ ${CXXFLAGS} $^ -o $@ || (notify-send -u critical "Failed to build $@" && false)
+	notify-send "Build complete for $@"
+
+3: 3_srv 3_cli
+
+3_srv: 3_srv.cpp
+	notify-send "Starting build for $@"
+	g++ ${CXXFLAGS} $^ -o $@ || (notify-send -u critical "Failed to build $@" && false)
+	notify-send "Build complete for $@"
+
+3_cli: 3_cli.cpp
 	notify-send "Starting build for $@"
 	g++ ${CXXFLAGS} $^ -o $@ || (notify-send -u critical "Failed to build $@" && false)
 	notify-send "Build complete for $@"
