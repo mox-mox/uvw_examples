@@ -1,7 +1,8 @@
 #include <uvw.hpp>
 #include <iostream>
 
-std::string socket_path("\0echo.sock", sizeof("\0echo.sock")-1);
+//std::string socket_path("\0echo.sock", sizeof("\0echo.sock")-1);
+std::string socket_path("echo.sock", sizeof("echo.sock")-1);
 
 int main()
 {
@@ -25,24 +26,13 @@ int main()
         handle.write(std::move(dataWrite), 2);
     });
 	
-
-
-
-
-
-
+    pipe->on<uvw::DataEvent>([](const uvw::DataEvent& evt, auto&){
+			std::cout<<"Got something from the pipe: "<<std::endl;
+			std::cout<<'	'<<std::string(&evt.data[0], evt.length)<<std::endl;
+    });
 
 	pipe->connect(socket_path);
-
-
-
-    //pipe->on<uvw::DataEvent>([](auto& evt, auto& hndl){
-	//		std::cout<<"Got something: "<<std::endl;
-	//		// The event argument is a struct with only two members: A unique_ptr
-	//		// to a char array and an integer with the length.
-	//		std::cout<<'	'<<std::string(&evt.data[0], evt.length)<<std::endl;
-    //});
-	//pipe->read();
+	pipe->read();
 
 
 
@@ -51,11 +41,8 @@ int main()
     auto console = loop->resource<uvw::TTYHandle>(uvw::StdIN, true);
     console->on<uvw::DataEvent>([pipe](auto& evt, auto& hndl){
 			(void) hndl;
-			std::cout<<"Got something: "<<std::endl;
-			// The event argument is a struct with only two members: A unique_ptr
-			// to a char array and an integer with the length.
+			std::cout<<"Got something from STDIN: "<<std::endl;
 			std::cout<<'	'<<std::string(&evt.data[0], evt.length)<<std::endl;
-			//pipe->write(evt.data, evt.length);
 			pipe->write(&evt.data[0], evt.length);
     });
 	console->read();

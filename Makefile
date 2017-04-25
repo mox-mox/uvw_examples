@@ -1,5 +1,5 @@
 CXXFLAGS := `pkg-config --libs --cflags libuv` -I"uvw/src/"
-CXXFLAGS += -Wall -Wextra -Wpedantic -Werror -Wfatal-errors
+CXXFLAGS += -Wall -Wextra -Wpedantic -Werror -Wfatal-errors -ggdb -O0
 
 
 #all: 1 2_srv 2_cli
